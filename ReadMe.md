@@ -1,4 +1,4 @@
-# Dialogue For Umbraco #
+﻿# Dialogue For Umbraco #
 
 Dialogue is a forum/bulletin board Umbraco 7.1 upwards. It is a semi port of [MVCForum](http://www.mvcforum.com) and has some features similar to StackOverFlow.
 
@@ -373,4 +373,4 @@ You can embed YouTube, Vimeo and Screenr videos into your posts, just paste the 
 
 ## Upgrading ##
 
-You should be able to just re-install the package over the top of the previous one. We are trying to make sure the installer takes care of everything for you.
+You should be able to just re-install the package over the top of the previous one. We are trying to make sure the installer takes care of everything for you. test
