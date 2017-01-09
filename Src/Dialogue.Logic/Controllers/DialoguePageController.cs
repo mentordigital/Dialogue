@@ -223,7 +223,18 @@ namespace Dialogue.Logic.Controllers
                             }
                         }
 
-                        return View(PathHelper.GetThemeViewPath("Create"), viewModel);
+
+						var topicPage = Request["pageId"];
+						if (!string.IsNullOrEmpty(topicPage))
+						{
+							var pageId = Convert.ToInt32(topicPage);
+							if (pageId > 0)
+							{
+								viewModel.PageId = pageId;
+							}
+						}
+
+						return View(PathHelper.GetThemeViewPath("Create"), viewModel);
                     }
                 }
             }

@@ -39,5 +39,7 @@ namespace Dialogue.Logic.Models
         public bool SubscribeToTopic { get; set; }
 
         public Member LoggedOnUser { get; set; }
-    }
+
+		public int PageId { get; set; }
+	}
 }

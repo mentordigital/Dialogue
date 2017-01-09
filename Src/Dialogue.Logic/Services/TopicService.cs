@@ -320,6 +320,11 @@ namespace Dialogue.Logic.Services
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
 
+		public int GetTopicCountByCategory(int categoryId)
+		{
+			return ContextPerRequest.Db.Topic.Count(x => x.CategoryId == categoryId);
+		}
+
         public List<Topic> GetAllPendingTopics()
         {
 

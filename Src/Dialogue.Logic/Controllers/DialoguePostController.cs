@@ -49,7 +49,7 @@ namespace Dialogue.Logic.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult CreatePost(CreateAjaxPostViewModel post)
+        public ActionResult CreatePost(CreateAjaxPostViewModel post)
         {
             PermissionSet permissions;
             Post newPost;
@@ -98,8 +98,12 @@ namespace Dialogue.Logic.Controllers
                 }
             }
 
-            //Check for moderation
-            if (newPost.Pending)
+
+			//get user post count > 5
+			var currentMemberPostCount = ServiceFactory.PostService.GetByMember(CurrentMember.Id).Count();
+
+			//Check for moderation
+			if (newPost.Pending || currentMemberPostCount < 5)
             {
                 return PartialView(PathHelper.GetThemePartialViewPath("PostModeration"));
             }
@@ -114,11 +118,39 @@ namespace Dialogue.Logic.Controllers
                 // Success send any notifications
                 NotifyNewTopics(topic, postContent);
 
-                return PartialView(PathHelper.GetThemePartialViewPath("Post"), viewModel);
+
+				var urlReferrer = Request.UrlReferrer;
+				if (urlReferrer != null)
+				{
+					return Redirect(urlReferrer.AbsoluteUri);
+				}
+				return PartialView(PathHelper.GetThemePartialViewPath("Post"), viewModel);
             }
         }
 
-        private void NotifyNewTopics(Topic topic, string postContent)
+		private void NotifyCatgoryAdmin(Topic topic)
+		{
+			var adminEmail = topic.Category.ModeratorEmailAddress;
+
+			if (!string.IsNullOrEmpty(adminEmail))
+			{
+				var sb = new StringBuilder();
+				sb.AppendFormat("<p>{0}</p>", string.Format("{0} New Posts", topic.Name));
+				sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain, topic.Url));
+				var email = new Email
+				{
+					Body = ServiceFactory.EmailService.EmailTemplate(adminEmail, sb.ToString()),
+					EmailFrom = Settings.NotificationReplyEmailAddress,
+					EmailTo = adminEmail,
+					NameTo = adminEmail,
+					Subject = string.Concat("{0} Subject", Settings.ForumName)
+				};
+
+				ServiceFactory.EmailService.SendMail(email);
+			}
+		}
+
+		private void NotifyNewTopics(Topic topic, string postContent)
         {
             // Get all notifications for this category
             var notifications = ServiceFactory.TopicNotificationService.GetByTopic(topic).Select(x => x.MemberId).ToList();
@@ -136,7 +168,7 @@ namespace Dialogue.Logic.Controllers
 
                     // Create the email
                     var sb = new StringBuilder();
-                    sb.AppendFormat("<p>{0}</p>", string.Format(Lang("Post.Notification.NewPosts"), topic.Name));
+                    sb.AppendFormat("<p>{0}</p>", string.Format("{0} New Posts", topic.Name));
                     sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain, topic.Url));
                     sb.Append(postContent);
 
@@ -147,7 +179,7 @@ namespace Dialogue.Logic.Controllers
                         EmailFrom = Settings.NotificationReplyEmailAddress,
                         EmailTo = user.Email,
                         NameTo = user.UserName,
-                        Subject = string.Concat(Lang("Post.Notification.Subject"), Settings.ForumName)
+                        Subject = string.Concat("{0} Subject", Settings.ForumName)
                     }).ToList();
 
                     // and now pass the emails in to be sent

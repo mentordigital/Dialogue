@@ -32,8 +32,18 @@ namespace Dialogue.Logic.Controllers
 
             var forumRoot = DialogueMapper.MapRootForum(model.Content);
 
-            // Return the model to the current template
-            return View(PathHelper.GetThemeViewPath("Dialogue"), forumRoot);
+		
+			foreach(var category in forumRoot.MainCategories)
+			{
+				var topicCount = ServiceFactory.TopicService.GetTopicCountByCategory(category.Id);
+				category.TopicCount = topicCount;
+
+				category.LatestTopic = ServiceFactory.TopicService.GetPagedTopicsByCategory(1, Settings.TopicsPerPage, int.MaxValue, category.Id).FirstOrDefault();
+
+
+			}
+			// Return the model to the current template
+			return View(PathHelper.GetThemeViewPath("Dialogue"), forumRoot);
         }
     } 
 

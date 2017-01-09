@@ -31,37 +31,46 @@ namespace Dialogue.Logic.Application
                 {
                     if (totalSeconds < 60)
                     {
-                        return GetLocalisedText("Date.JustNow");
-                    }
+						//return GetLocalisedText("Date.JustNow");
+						return "Just Now";
+
+					}
                     if (totalSeconds < 120)
                     {
-                        return GetLocalisedText("Date.OneMinuteAgo");
-                    }
+                        //return GetLocalisedText("Date.OneMinuteAgo");
+						return "One Minute Ago";
+					}
                     if (totalSeconds < 0xe10)
                     {
-                        return string.Format(GetLocalisedText("Date.MinutesAgo"), Math.Floor((double)(((double)totalSeconds) / 60.0)));
-                    }
+						//return string.Format(GetLocalisedText("Date.MinutesAgo"), Math.Floor((double)(((double)totalSeconds) / 60.0)));
+						return string.Format("{0} Minutes Ago", Math.Floor((double)(((double)totalSeconds) / 60.0)));
+					}
                     if (totalSeconds < 0x1c20)
                     {
-                        return GetLocalisedText("Date.OneHourAgo");
-                    }
+                       // return GetLocalisedText("Date.OneHourAgo");
+						return "One Hour Ago";
+					}
                     if (totalSeconds < 0x15180)
                     {
-                        return string.Format(GetLocalisedText("Date.HoursAgo"), Math.Floor((double)(((double)totalSeconds) / 3600.0)));
-                    }
+                        //return string.Format(GetLocalisedText("Date.HoursAgo"), Math.Floor((double)(((double)totalSeconds) / 3600.0)));
+						return string.Format("{0} Hours Ago", Math.Floor((double)(((double)totalSeconds) / 3600.0)));
+					}
                 }
                 if (totalDays == 1)
                 {
-                    return GetLocalisedText("Date.Yesterday");
+                    //return GetLocalisedText("Date.Yesterday");
+					return "Yesterday";
                 }
                 if (totalDays < 7)
                 {
-                    return string.Format(GetLocalisedText("Date.DaysAgo"), totalDays);
-                }
+                    //return string.Format(GetLocalisedText("Date.DaysAgo"), totalDays);
+					return string.Format("{0} Days Ago", totalDays);
+				}
                 if (totalDays < 0x1f)
                 {
-                    return string.Format(GetLocalisedText("Date.WeeksAgo"), Math.Ceiling((double)(((double)totalDays) / 7.0)));
-                }
+                    //return string.Format(GetLocalisedText("Date.WeeksAgo"), Math.Ceiling((double)(((double)totalDays) / 7.0)));
+					return string.Format("{0} Weeks Ago", Math.Ceiling((double)(((double)totalDays) / 7.0)));
+				}
             }
             return date;
         }

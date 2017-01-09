@@ -57,6 +57,8 @@ namespace Dialogue.Logic.Models
         }
 
         public LoginType LoginType { get; set; }
+
+		public bool IsAdmin { get; set; }
     }
 
     public enum LoginType

@@ -37,14 +37,17 @@ namespace Dialogue.Logic.Models.ViewModels
         [DialogueDisplayName("Topic.Label.SubscribeToTopic")]
         public bool SubscribeToTopic { get; set; }
 
-    }
+		public int PageId { get; set; }
+
+	}
 
     public class CreateTopicButtonViewModel
     {
         public Member LoggedOnUser { get; set; }
         public bool UserCanPostTopics { get; set; }
         public int CategoryId { get; set; }
-    }
+		public int PageId { get; set; }
+	}
 
     public class ShowTopicViewModel : MasterModel
     {

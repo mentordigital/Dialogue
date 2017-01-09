@@ -18,5 +18,9 @@ namespace Dialogue.Logic.Models
         public bool ModerateAllPostsInThisCategory { get; set; }
         public List<Category> SubCategories { get; set; }
         public List<Category> ParentCategories { get; set; }
-    }
+		public string ModeratorEmailAddress { get; set; }
+		public int TopicCount { get; set; }
+		public Topic LatestTopic { get; set; }
+
+	}
 }

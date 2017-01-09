@@ -61,8 +61,11 @@ namespace Dialogue.Logic.Controllers
                     PostCount = member.PostCount
                 };
 
-                // Get the topic view slug
-                return View(PathHelper.GetThemeViewPath("MemberProfile"), viewModel);
+				var adminGroup = ServiceFactory.MemberService.GetGroupByName(AppConstants.AdminRoleName);
+				viewModel.User.IsAdmin = viewModel.User.Groups.Contains(adminGroup);
+
+				// Get the topic view slug
+				return View(PathHelper.GetThemeViewPath("MemberProfile"), viewModel);
             }
         }
 

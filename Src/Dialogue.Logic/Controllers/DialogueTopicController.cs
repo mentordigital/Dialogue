@@ -469,8 +469,12 @@ namespace Dialogue.Logic.Controllers
                                 }
                             }
 
-                            // Check for moderation
-                            if (category.ModerateAllTopicsInThisCategory)
+
+							//get user post count > 5
+							var currentMemberPostCount = ServiceFactory.PostService.GetByMember(CurrentMember.Id).Count();
+
+							// Check for moderation
+							if (category.ModerateAllTopicsInThisCategory || currentMemberPostCount > 5)
                             {
                                 topic.Pending = true;
                                 moderate = true;
@@ -547,8 +551,32 @@ namespace Dialogue.Logic.Controllers
                 {
                     if (successfullyCreated)
                     {
-                        // Success so now send the emails
-                        NotifyNewTopics(category);
+						//TODO: programtically add topic guid to page forum tab properties
+						// Half done
+						if (topicViewModel.PageId > 0)
+						{
+							var nodeId = topicViewModel.PageId;
+							var node = ApplicationContext.Services.ContentService.GetPublishedVersion(nodeId);
+							if (node != null)
+							{
+								var topicPickerValue = node.GetValue("topicPicker");
+
+								var documentTopics = Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(topicPickerValue.ToString()).ToList();
+								documentTopics.Add(topic.Id.ToString());
+
+								string[] newTopics = documentTopics.Select(x => x).ToArray();
+								string topicsJson = Newtonsoft.Json.JsonConvert.SerializeObject(newTopics);
+
+								node.SetValue("topicPicker", topicsJson);
+								ApplicationContext.Services.ContentService.Save(node);
+								ApplicationContext.Services.ContentService.Publish(node);
+							}
+						}
+
+
+
+						// Success so now send the emails
+						NotifyNewTopics(category);
 
                         // Redirect to the newly created topic
                         return Redirect(string.Format("{0}?postbadges=true", topic.Url));
@@ -564,6 +592,28 @@ namespace Dialogue.Logic.Controllers
             ShowModelErrors();
             return Redirect(Urls.GenerateUrl(Urls.UrlType.TopicCreate));
         }
+
+		private void NotifyCatgoryAdmin(Category cat)
+		{
+			var adminEmail = cat.ModeratorEmailAddress;
+
+			if(!string.IsNullOrEmpty(adminEmail))
+			{
+				var sb = new StringBuilder();
+				sb.AppendFormat("<p>{0}</p>", string.Format("{0} New Topics", cat.Name));
+				sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain, cat.Url));
+				var email = new Email
+				{
+					Body = ServiceFactory.EmailService.EmailTemplate(adminEmail, sb.ToString()),
+					EmailFrom = Settings.NotificationReplyEmailAddress,
+					EmailTo = adminEmail,
+					NameTo = adminEmail,
+					Subject = string.Concat("{0} Subject", Settings.ForumName)
+				};
+
+				ServiceFactory.EmailService.SendMail(email);
+			}
+		}
 
         private void NotifyNewTopics(Category cat)
         {
@@ -587,7 +637,7 @@ namespace Dialogue.Logic.Controllers
 
                     // Create the email
                     var sb = new StringBuilder();
-                    sb.AppendFormat("<p>{0}</p>", string.Format(Lang("Topic.Notification.NewTopics"), cat.Name));
+                    sb.AppendFormat("<p>{0}</p>", string.Format("{0} New Topics", cat.Name));
                     sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain, cat.Url));
 
                     // create the emails and only send them to people who have not had notifications disabled
@@ -597,7 +647,7 @@ namespace Dialogue.Logic.Controllers
                         EmailFrom = Settings.NotificationReplyEmailAddress,
                         EmailTo = user.Email,
                         NameTo = user.UserName,
-                        Subject = string.Concat(Lang("Topic.Notification.Subject"), Settings.ForumName)
+                        Subject = string.Concat("{0} Subject", Settings.ForumName)
                     }).ToList();
 
                     // and now pass the emails in to be sent
@@ -607,12 +657,13 @@ namespace Dialogue.Logic.Controllers
         }
 
 
-        public PartialViewResult CreateTopicButton()
+        public PartialViewResult CreateTopicButton(int pageId = -1)
         {
-            var viewModel = new CreateTopicButtonViewModel
-            {
-                LoggedOnUser = CurrentMember,
-                CategoryId = 0
+			var viewModel = new CreateTopicButtonViewModel
+			{
+				LoggedOnUser = CurrentMember,
+				CategoryId = 0,
+				PageId = pageId
             };
 
             if (CurrentMember != null)
