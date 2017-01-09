@@ -56,7 +56,8 @@ namespace Dialogue.Logic.Controllers
                 var viewModel = new ViewMemberViewModel(model.Content)
                 {
                     User = member,
-                    LoggedOnUserId = loggedonId,
+					LoggedOnUser = CurrentMember,
+					LoggedOnUserId = loggedonId,
                     PageTitle = string.Concat(member.UserName, Lang("Members.ProfileTitle")),
                     PostCount = member.PostCount
                 };

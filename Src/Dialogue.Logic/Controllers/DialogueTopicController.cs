@@ -484,7 +484,8 @@ namespace Dialogue.Logic.Controllers
 							// Check for moderation
 							if (category.ModerateAllTopicsInThisCategory || (currentMemberPostCount < 5 && !hasBadge))
                             {
-                                topic.Pending = true;
+								NotifyCategoryAdmin(category);
+								topic.Pending = true;
                                 moderate = true;
                             }
 
@@ -611,14 +612,14 @@ namespace Dialogue.Logic.Controllers
 			{
 				var sb = new StringBuilder();
 				sb.AppendFormat("<p>{0}</p>", string.Format("{0} New Topics", cat.Name));
-				sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain, cat.Url));
+				sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain.TrimEnd('/'), cat.Url));
 				var email = new Email
 				{
 					Body = ServiceFactory.EmailService.EmailTemplate(adminEmail, sb.ToString()),
 					EmailFrom = Settings.NotificationReplyEmailAddress,
 					EmailTo = adminEmail,
 					NameTo = adminEmail,
-					Subject = string.Concat("{0} Subject", Settings.ForumName)
+					Subject = string.Format("{0} Subject", Settings.ForumName)
 				};
 
 				ServiceFactory.EmailService.SendMail(email);
@@ -648,7 +649,7 @@ namespace Dialogue.Logic.Controllers
                     // Create the email
                     var sb = new StringBuilder();
                     sb.AppendFormat("<p>{0}</p>", string.Format("{0} New Topics", cat.Name));
-                    sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain, cat.Url));
+                    sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain.TrimEnd('/'), cat.Url));
 
                     // create the emails and only send them to people who have not had notifications disabled
                     var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
@@ -657,7 +658,7 @@ namespace Dialogue.Logic.Controllers
                         EmailFrom = Settings.NotificationReplyEmailAddress,
                         EmailTo = user.Email,
                         NameTo = user.UserName,
-                        Subject = string.Concat("{0} Subject", Settings.ForumName)
+                        Subject = string.Format("{0} Subject", Settings.ForumName)
                     }).ToList();
 
                     // and now pass the emails in to be sent

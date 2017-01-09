@@ -113,7 +113,8 @@ namespace Dialogue.Logic.Controllers
 			//Check for moderation
 			if (newPost.Pending || (currentMemberPostCount < 5 && !hasBadge))
             {
-               // return PartialView(PathHelper.GetThemePartialViewPath("PostModeration"));
+				// return PartialView(PathHelper.GetThemePartialViewPath("PostModeration"));
+				NotifyCategoryAdmin(topic);
 				return MessageToHomePage("Awaiting Moderation");
 			}
 
@@ -144,15 +145,15 @@ namespace Dialogue.Logic.Controllers
 			if (!string.IsNullOrEmpty(adminEmail))
 			{
 				var sb = new StringBuilder();
-				sb.AppendFormat("<p>{0}</p>", string.Format("{0} New Posts", topic.Name));
-				sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain, topic.Url));
+				sb.AppendFormat("<p>{0}</p>", string.Format("{0} have new posts that need moderation", topic.Name));
+				sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain.TrimEnd('/'), topic.Url));
 				var email = new Email
 				{
 					Body = ServiceFactory.EmailService.EmailTemplate(adminEmail, sb.ToString()),
 					EmailFrom = Settings.NotificationReplyEmailAddress,
 					EmailTo = adminEmail,
 					NameTo = adminEmail,
-					Subject = string.Concat("{0} Subject", Settings.ForumName)
+					Subject = string.Format("{0} Subject", Settings.ForumName)
 				};
 
 				ServiceFactory.EmailService.SendMail(email);
@@ -178,7 +179,7 @@ namespace Dialogue.Logic.Controllers
                     // Create the email
                     var sb = new StringBuilder();
                     sb.AppendFormat("<p>{0}</p>", string.Format("{0} New Posts", topic.Name));
-                    sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain, topic.Url));
+                    sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain.TrimEnd('/'), topic.Url));
                     sb.Append(postContent);
 
                     // create the emails only to people who haven't had notifications disabled
@@ -188,7 +189,7 @@ namespace Dialogue.Logic.Controllers
                         EmailFrom = Settings.NotificationReplyEmailAddress,
                         EmailTo = user.Email,
                         NameTo = user.UserName,
-                        Subject = string.Concat("{0} Subject", Settings.ForumName)
+                        Subject = string.Format("{0} Subject", Settings.ForumName)
                     }).ToList();
 
                     // and now pass the emails in to be sent

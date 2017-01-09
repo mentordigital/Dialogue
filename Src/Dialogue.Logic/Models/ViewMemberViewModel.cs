@@ -8,7 +8,8 @@ namespace Dialogue.Logic.Models
         {
         }
         public Member User { get; set; }
-        public int PostCount { get; set; }
+		public Member LoggedOnUser { get; set; }
+		public int PostCount { get; set; }
         public int LoggedOnUserId { get; set; }
     }
 }
