@@ -42,7 +42,7 @@ namespace Dialogue.Logic.Controllers
             // Trying to be a sneaky mo fo, so tell them
             var message = new GenericMessageViewModel
             {
-                Message = Lang("Errors.NoPermission"),
+                Message = "No Permission",
                 MessageType = GenericMessages.Warning
             };
             ShowMessage(message);
@@ -149,7 +149,7 @@ namespace Dialogue.Logic.Controllers
             // Trying to be a sneaky mo fo, so tell them
             var message = new GenericMessageViewModel
             {
-                Message = Lang("Errors.NoPermission"),
+                Message = "No Permission",
                 MessageType = GenericMessages.Warning
             };
             ShowMessage(message);

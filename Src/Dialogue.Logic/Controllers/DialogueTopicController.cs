@@ -93,7 +93,7 @@ namespace Dialogue.Logic.Controllers
                     // redirect with message
                     if (permissions[AppConstants.PermissionDenyAccess].IsTicked)
                     {
-                        return ErrorToHomePage(Lang("Errors.NoPermission"));
+                        return ErrorToHomePage("No Permission");
                     }
 
                     // See if the user has subscribed to this topic or not
@@ -367,7 +367,7 @@ namespace Dialogue.Logic.Controllers
                 if (CurrentMember.IsLockedOut || CurrentMember.DisablePosting == true || !CurrentMember.IsApproved)
                 {
                     ServiceFactory.MemberService.LogOff();
-                    return ErrorToHomePage(Lang("Errors.NoPermission"));
+                    return ErrorToHomePage("No Permission");
                 }
 
                 var successfullyCreated = false;
@@ -398,7 +398,7 @@ namespace Dialogue.Logic.Controllers
                     if (permissions[AppConstants.PermissionDenyAccess].IsTicked || permissions[AppConstants.PermissionReadOnly].IsTicked || !permissions[AppConstants.PermissionCreateTopics].IsTicked)
                     {
                         // Throw exception so Ajax caller picks it up
-                        ModelState.AddModelError(string.Empty, Lang("Errors.NoPermission"));
+                        ModelState.AddModelError(string.Empty, "No Permission");
                     }
                     else
                     {
@@ -463,7 +463,7 @@ namespace Dialogue.Logic.Controllers
                                     //No permission to create a Poll so show a message but create the topic
                                     ShowMessage(new GenericMessageViewModel
                                     {
-                                        Message = Lang("Errors.NoPermissionPolls"),
+                                        Message = Lang("No PermissionPolls"),
                                         MessageType = GenericMessages.Info
                                     });
                                 }
@@ -473,8 +473,16 @@ namespace Dialogue.Logic.Controllers
 							//get user post count > 5
 							var currentMemberPostCount = ServiceFactory.PostService.GetByMember(CurrentMember.Id).Count();
 
+							if (CurrentMember.Badges == null)
+							{
+								CurrentMember.Badges = ServiceFactory.BadgeService.GetallMembersBadges(CurrentMember.Id);
+							}
+
+							var hasBadge = CurrentMember.Badges != null && CurrentMember.Badges.Any(x => x.Name == "UserFivePost");
+							
+
 							// Check for moderation
-							if (category.ModerateAllTopicsInThisCategory || currentMemberPostCount > 5)
+							if (category.ModerateAllTopicsInThisCategory || (currentMemberPostCount < 5 && !hasBadge))
                             {
                                 topic.Pending = true;
                                 moderate = true;
@@ -552,7 +560,6 @@ namespace Dialogue.Logic.Controllers
                     if (successfullyCreated)
                     {
 						//TODO: programtically add topic guid to page forum tab properties
-						// Half done
 						if (topicViewModel.PageId > 0)
 						{
 							var nodeId = topicViewModel.PageId;
@@ -561,15 +568,18 @@ namespace Dialogue.Logic.Controllers
 							{
 								var topicPickerValue = node.GetValue("topicPicker");
 
-								var documentTopics = Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(topicPickerValue.ToString()).ToList();
-								documentTopics.Add(topic.Id.ToString());
+								if (topicPickerValue != null)
+								{
+									var documentTopics = Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(topicPickerValue.ToString()).ToList();
+									documentTopics.Add(topic.Id.ToString());
 
-								string[] newTopics = documentTopics.Select(x => x).ToArray();
-								string topicsJson = Newtonsoft.Json.JsonConvert.SerializeObject(newTopics);
+									string[] newTopics = documentTopics.Select(x => x).ToArray();
+									string topicsJson = Newtonsoft.Json.JsonConvert.SerializeObject(newTopics);
 
-								node.SetValue("topicPicker", topicsJson);
-								ApplicationContext.Services.ContentService.Save(node);
-								ApplicationContext.Services.ContentService.Publish(node);
+									node.SetValue("topicPicker", topicsJson);
+									ApplicationContext.Services.ContentService.Save(node);
+									ApplicationContext.Services.ContentService.Publish(node);
+								}
 							}
 						}
 
@@ -585,7 +595,7 @@ namespace Dialogue.Logic.Controllers
                     {
                         // Moderation needed
                         // Tell the user the topic is awaiting moderation
-                        return MessageToHomePage(Lang("Moderate.AwaitingModeration"));
+                        return MessageToHomePage("Awaiting Moderation");
                     }
                 }
             }
@@ -593,7 +603,7 @@ namespace Dialogue.Logic.Controllers
             return Redirect(Urls.GenerateUrl(Urls.UrlType.TopicCreate));
         }
 
-		private void NotifyCatgoryAdmin(Category cat)
+		private void NotifyCategoryAdmin(Category cat)
 		{
 			var adminEmail = cat.ModeratorEmailAddress;
 

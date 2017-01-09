@@ -382,7 +382,7 @@ namespace Dialogue.Logic.Services
             if (permissions[AppConstants.PermissionDenyAccess].IsTicked || permissions[AppConstants.PermissionReadOnly].IsTicked)
             {
                 // Throw exception so Ajax caller picks it up
-                throw new ApplicationException(AppHelpers.Lang("Errors.NoPermission"));
+                throw new ApplicationException("No Permission");
             }
 
             // Has permission so create the post

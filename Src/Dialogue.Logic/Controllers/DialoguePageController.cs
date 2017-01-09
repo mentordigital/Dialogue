@@ -238,7 +238,7 @@ namespace Dialogue.Logic.Controllers
                     }
                 }
             }
-            return ErrorToHomePage(Lang("Errors.NoPermission"));
+            return ErrorToHomePage("No Permission");
         }
 
         public ActionResult Search(DialoguePage page)
@@ -412,7 +412,7 @@ namespace Dialogue.Logic.Controllers
             {
                 var message = new GenericMessageViewModel
                 {
-                    Message = Lang("Errors.NoPermission"),
+                    Message = "No Permission",
                     MessageType = GenericMessages.Danger
                 };
                 ShowMessage(message);
@@ -482,7 +482,7 @@ namespace Dialogue.Logic.Controllers
                     return View(PathHelper.GetThemeViewPath("PrivateMessageView"), viewModel);
                 }
 
-                return ErrorToHomePage(Lang("Errors.NoPermission"));
+                return ErrorToHomePage("No Permission");
             }
         }
 

@@ -127,7 +127,7 @@ namespace Dialogue.Logic.Controllers
                     }
                     else
                     {
-                        throw new Exception(Lang("Errors.NoPermission"));
+                        throw new Exception("No Permission");
                     }
                 }
 

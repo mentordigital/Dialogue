@@ -52,7 +52,7 @@ namespace Dialogue.Logic.Controllers
                             var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroup);
                             if (permissions[AppConstants.PermissionAttachFiles].IsTicked == false && CurrentMember.DisableFileUploads != true)
                             {
-                                return ErrorToHomePage(Lang("Errors.NoPermission"));
+                                return ErrorToHomePage("No Permission");
                             }
 
                             // woot! User has permission and all seems ok
@@ -154,7 +154,7 @@ namespace Dialogue.Logic.Controllers
                         else
                         {
 
-                            message.Message = Lang("Errors.NoPermission");
+                            message.Message = "No Permission";
                             message.MessageType = GenericMessages.Danger;
                             ShowMessage(message);
               

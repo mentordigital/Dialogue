@@ -102,11 +102,20 @@ namespace Dialogue.Logic.Controllers
 			//get user post count > 5
 			var currentMemberPostCount = ServiceFactory.PostService.GetByMember(CurrentMember.Id).Count();
 
+			if (CurrentMember.Badges == null)
+			{
+				CurrentMember.Badges = ServiceFactory.BadgeService.GetallMembersBadges(CurrentMember.Id);
+			}
+
+
+			var hasBadge = CurrentMember.Badges != null && CurrentMember.Badges.Any(x => x.Name == "UserFivePost");
+
 			//Check for moderation
-			if (newPost.Pending || currentMemberPostCount < 5)
+			if (newPost.Pending || (currentMemberPostCount < 5 && !hasBadge))
             {
-                return PartialView(PathHelper.GetThemePartialViewPath("PostModeration"));
-            }
+               // return PartialView(PathHelper.GetThemePartialViewPath("PostModeration"));
+				return MessageToHomePage("Awaiting Moderation");
+			}
 
             // All good send the notifications and send the post back
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -128,7 +137,7 @@ namespace Dialogue.Logic.Controllers
             }
         }
 
-		private void NotifyCatgoryAdmin(Topic topic)
+		private void NotifyCategoryAdmin(Topic topic)
 		{
 			var adminEmail = topic.Category.ModeratorEmailAddress;
 

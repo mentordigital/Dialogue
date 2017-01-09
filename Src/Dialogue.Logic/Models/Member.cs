@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Dialogue.Logic.Application;
 using Umbraco.Core.Models;
+using Dialogue.Logic.Services;
+using Dialogue.Logic.Constants;
 
 namespace Dialogue.Logic.Models
 {
@@ -58,7 +60,19 @@ namespace Dialogue.Logic.Models
 
         public LoginType LoginType { get; set; }
 
-		public bool IsAdmin { get; set; }
+		public bool IsAdmin
+		{
+			get
+			{
+				if (this.Groups != null && this.Groups.Any())
+				{
+					var adminGroup = ServiceFactory.MemberService.GetGroupByName(AppConstants.AdminRoleName);
+					var isAdmin = this.Groups.Contains(adminGroup);
+					return isAdmin;
+				}
+				return false;
+			}
+		}
     }
 
     public enum LoginType

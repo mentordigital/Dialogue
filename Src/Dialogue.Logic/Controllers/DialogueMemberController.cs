@@ -61,9 +61,6 @@ namespace Dialogue.Logic.Controllers
                     PostCount = member.PostCount
                 };
 
-				var adminGroup = ServiceFactory.MemberService.GetGroupByName(AppConstants.AdminRoleName);
-				viewModel.User.IsAdmin = viewModel.User.Groups.Contains(adminGroup);
-
 				// Get the topic view slug
 				return View(PathHelper.GetThemeViewPath("MemberProfile"), viewModel);
             }
@@ -385,7 +382,7 @@ namespace Dialogue.Logic.Controllers
 
 
             }
-            return ErrorToHomePage(Lang("Errors.NoPermission"));
+            return ErrorToHomePage("No Permission");
         }
 
         [Authorize]
@@ -424,7 +421,7 @@ namespace Dialogue.Logic.Controllers
                     }
                 }
             }
-            return ErrorToHomePage(Lang("Errors.NoPermission"));
+            return ErrorToHomePage("No Permission");
         }
 
         [Authorize]
@@ -463,7 +460,7 @@ namespace Dialogue.Logic.Controllers
                     }
                 }
             }
-            return ErrorToHomePage(Lang("Errors.NoPermission"));
+            return ErrorToHomePage("No Permission");
         }
 
         [Authorize]

@@ -76,7 +76,7 @@ namespace Dialogue.Logic.Controllers
                     return View(PathHelper.GetThemeViewPath("Category"), viewModel);
                 }
 
-                return ErrorToHomePage(Lang("Errors.NoPermission"));
+                return ErrorToHomePage("No Permission");
             }
         }
     } 

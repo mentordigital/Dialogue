@@ -39,8 +39,6 @@ namespace Dialogue.Logic.Controllers
 				category.TopicCount = topicCount;
 
 				category.LatestTopic = ServiceFactory.TopicService.GetPagedTopicsByCategory(1, Settings.TopicsPerPage, int.MaxValue, category.Id).FirstOrDefault();
-
-
 			}
 			// Return the model to the current template
 			return View(PathHelper.GetThemeViewPath("Dialogue"), forumRoot);
