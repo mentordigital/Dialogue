@@ -51,19 +51,19 @@ namespace Dialogue.Logic.Models.ViewModels
 
     public class EditPostViewModel
     {
-        [DialogueDisplayName("Post.Label.TopicName")]
+        [DialogueDisplayName("Topic Name")]
         [Required]
         [StringLength(600)]
         public string Name { get; set; }
 
-        [DialogueDisplayName("Post.Label.IsStickyTopic")]
+        [DialogueDisplayName("Is Sticky Topic")]
         public bool IsSticky { get; set; }
 
-        [DialogueDisplayName("Post.Label.LockTopic")]
+        [DialogueDisplayName("Lock Topic")]
         public bool IsLocked { get; set; }
 
         [Required]
-        [DialogueDisplayName("Post.label.TopicCategory")]
+        [DialogueDisplayName("Topic Category")]
         public int Category { get; set; }
 
         public string Tags { get; set; }

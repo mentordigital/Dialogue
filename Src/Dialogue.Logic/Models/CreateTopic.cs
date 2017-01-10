@@ -16,7 +16,7 @@ namespace Dialogue.Logic.Models
 
         [Required]
         [StringLength(600)]
-        [DialogueDisplayName("Topic.Label.TopicTitle")]
+        [DialogueDisplayName("Topic Title")]
         public string TopicName { get; set; }
 
         [UIHint(AppConstants.EditorType), AllowHtml]
@@ -28,14 +28,14 @@ namespace Dialogue.Logic.Models
         public bool IsLocked { get; set; }
 
         [Required]
-        [DialogueDisplayName("Topic.Label.Category")]
+        [DialogueDisplayName("Category")]
         public int Category { get; set; }
 
         public IEnumerable<Category> Categories { get; set; }
 
         public List<PollAnswer> PollAnswers { get; set; }
 
-        [DialogueDisplayName("Topic.Label.SubscribeToTopic")]
+        [DialogueDisplayName("Subscribe To Topic")]
         public bool SubscribeToTopic { get; set; }
 
         public Member LoggedOnUser { get; set; }

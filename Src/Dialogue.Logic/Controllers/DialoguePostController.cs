@@ -61,13 +61,13 @@ namespace Dialogue.Logic.Controllers
                 if (CurrentMember.IsLockedOut | !CurrentMember.IsApproved)
                 {
                     ServiceFactory.MemberService.LogOff();
-                    throw new Exception(Lang("Errors.NoAccess"));
+                    throw new Exception("No Access");
                 }
 
                 // Check for banned links
                 if (ServiceFactory.BannedLinkService.ContainsBannedLink(post.PostContent))
                 {
-                    throw new Exception(Lang("Errors.BannedLink"));
+                    throw new Exception("Banned Link");
                 }
 
                 topic = ServiceFactory.TopicService.Get(post.Topic);
@@ -254,7 +254,7 @@ namespace Dialogue.Logic.Controllers
                 // Redirect to root as this was a topic and deleted
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    Message = Lang("Topic.Deleted"),
+                    Message = "Topic Deleted",
                     MessageType = GenericMessages.Success
                 };
                 return Redirect(Settings.ForumRootUrl);
@@ -263,7 +263,7 @@ namespace Dialogue.Logic.Controllers
             // Show message that post is deleted
             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
             {
-                Message = Lang("Post.Deleted"),
+                Message = "Post Deleted",
                 MessageType = GenericMessages.Success
             };
 
@@ -432,7 +432,7 @@ namespace Dialogue.Logic.Controllers
                     // redirect back to topic
                     var message = new GenericMessageViewModel
                     {
-                        Message = Lang("Post.Updated"),
+                        Message = "Post Updated",
                         MessageType = GenericMessages.Success
                     };
                     try

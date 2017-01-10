@@ -120,7 +120,7 @@ namespace Dialogue.Logic.Controllers
             {
                 var viewModel = new AuthoriseViewModel
                 {
-                    PageTitle = Lang("Authorise.PageTitle"),
+                    PageTitle = "Authorise",
                     Members = ServiceFactory.MemberService.GetUnAuthorisedMembers(),
                     Posts = ServiceFactory.PostService.GetAllPendingPosts(),
                     Topics = ServiceFactory.TopicService.GetAllPendingTopics()
@@ -139,7 +139,7 @@ namespace Dialogue.Logic.Controllers
                 {
                     DodgyMembers = ServiceFactory.MemberPointsService.GetLatestNegativeUsers(Settings.PostsPerPage),
                     DodgyPosts = ServiceFactory.PostService.GetLowestVotedPost(Settings.PostsPerPage),
-                    PageTitle = Lang("Spam.OverViewPageTitle")
+                    PageTitle = "Spam Overview"
                 };
 
                 return View(PathHelper.GetThemeViewPath("SpamOverview"), viewModel);   
@@ -180,7 +180,7 @@ namespace Dialogue.Logic.Controllers
                             // We use temp data because we are doing a redirect
                             ShowMessage(new GenericMessageViewModel
                             {
-                                Message = Lang("Members.NowApproved"),
+                                Message = "Member Now Approved",
                                 MessageType = GenericMessages.Success
                             });
                         }
@@ -209,7 +209,7 @@ namespace Dialogue.Logic.Controllers
                             Categories = allowedCategories,
                             LoggedOnUser = CurrentMember,
                             SubscribeToTopic = true,
-                            PageTitle = Lang("Topic.CreateTopic")
+                            PageTitle = "Create Topic"
                         };
 
                         // Pre-Select category user is in
@@ -320,7 +320,7 @@ namespace Dialogue.Logic.Controllers
                         viewModel.Posts.Add(postViewModel);
                     }
 
-                    viewModel.PageTitle = string.Concat(Lang("Search.PageTitle"), AppHelpers.SafePlainText(term));
+                    viewModel.PageTitle = string.Concat("Search", AppHelpers.SafePlainText(term));
 
                     return View(PathHelper.GetThemeViewPath("Search"), viewModel);
                 }
@@ -335,7 +335,7 @@ namespace Dialogue.Logic.Controllers
 
             var viewModel = new PageChangePasswordViewModel(page)
             {
-                PageTitle = Lang("Members.ChangePassword.Title")
+                PageTitle = "Change Password"
             };
             return View(PathHelper.GetThemeViewPath("ChangePassword"), viewModel);
         }
@@ -368,7 +368,7 @@ namespace Dialogue.Logic.Controllers
                             DisablePrivateMessages = user.DisablePrivateMessages,
                             CanEditOtherMembers = user.CanEditOtherMembers
                         },
-                        PageTitle = string.Format(Lang("Members.EditProfile"), user.UserName)
+                        PageTitle = string.Format("Edit Profile for {0}", user.UserName)
                     };
 
                     return View(PathHelper.GetThemeViewPath("EditMember"), viewModel);
@@ -397,7 +397,7 @@ namespace Dialogue.Logic.Controllers
                     {
                         MemberId = user.Id, 
                         Username = user.UserName,
-                        PageTitle = Lang("Report.MemberReport")
+                        PageTitle = "Member Report"
                     };
                     return View(PathHelper.GetThemeViewPath("ReportMember"), viewModel);
                 }
@@ -430,7 +430,7 @@ namespace Dialogue.Logic.Controllers
                         PageIndex = pageIndex,
                         TotalCount = pagedMessages.TotalCount
                     },
-                    PageTitle = Lang("PM.ReceivedPrivateMessages")
+                    PageTitle = "Received Private Messages"
                 };
                 return View(PathHelper.GetThemeViewPath("PrivateMessages"), viewModel);
             }
@@ -499,7 +499,7 @@ namespace Dialogue.Logic.Controllers
                     {
                         Messages = pagedMessages
                     },
-                    PageTitle = Lang("PM.SentPrivateMessages")
+                    PageTitle = "Sent Private Messages"
                 };
                 return View(PathHelper.GetThemeViewPath("PrivateMessagesSent"), viewModel);
             }
@@ -523,7 +523,7 @@ namespace Dialogue.Logic.Controllers
             {
                 ShowMessage(new GenericMessageViewModel
                 {
-                    Message = Lang("PM.SendingToQuickly"),
+                    Message = "Sending To Quickly",
                     MessageType = GenericMessages.Danger
                 });
                 return Redirect(Urls.GenerateUrl(Urls.UrlType.MessageInbox));
@@ -535,7 +535,7 @@ namespace Dialogue.Logic.Controllers
             {
                 ShowMessage(new GenericMessageViewModel
                 {
-                    Message = Lang("PM.SentItemsOverCapcity"),
+                    Message = "Sent Items Over Capcity",
                     MessageType = GenericMessages.Danger
                 });
                 return Redirect(Urls.GenerateUrl(Urls.UrlType.MessageInbox));
@@ -544,7 +544,7 @@ namespace Dialogue.Logic.Controllers
             var viewModel = new PageCreatePrivateMessageViewModel(page)
             {
                 CreatePrivateMessageViewModel = new CreatePrivateMessageViewModel(),
-                PageTitle = Lang("PM.CreatePrivateMessage")
+                PageTitle = "Create Private Message"
             };
 
             // add the username to the to box if available
@@ -612,7 +612,7 @@ namespace Dialogue.Logic.Controllers
                     var pageViewModel = new EditPostPageViewModel(page)
                     {
                         EditPostViewModel = viewModel,
-                        PageTitle = Lang("Post.EditPostPageTitle")
+                        PageTitle = "Edit Post"
                     };
 
                     return View(PathHelper.GetThemeViewPath("EditPost"), pageViewModel);
@@ -637,7 +637,7 @@ namespace Dialogue.Logic.Controllers
                             PostId = post.Id,
                             Post = post,
                             PostCreatorUsername = post.Member.UserName,
-                            PageTitle = string.Concat(Lang("Report.ReportPostBy"), post.Member.UserName)
+                            PageTitle = string.Format("Report Post By {0}", post.Member.UserName)
                         };
                         return View(PathHelper.GetThemeViewPath("PostReport"), viewModel);
                     }
@@ -653,7 +653,7 @@ namespace Dialogue.Logic.Controllers
             {
                 var viewModel = new ViewFavouritesViewModel(page)
                 {
-                    PageTitle = Lang("Favourites.PageTitle")
+                    PageTitle = "Favourites"
                 };
 
                 var postIds = ServiceFactory.FavouriteService.GetAllByMember(CurrentMember.Id).Select(x => x.PostId);
@@ -672,7 +672,7 @@ namespace Dialogue.Logic.Controllers
                 var badgesListModel = new AllBadgesViewModel(page)
                 {
                     AllBadges = allBadges,
-                    PageTitle = Lang("Badge.AllBadges.PageTitle")
+                    PageTitle = "All Badges"
                 };
 
                 return View(PathHelper.GetThemeViewPath("Badges"), badgesListModel);
@@ -681,7 +681,7 @@ namespace Dialogue.Logic.Controllers
 
         public ActionResult Leaderboard(DialoguePage page)
         {
-            page.PageTitle = Lang("Page.Leaderboard.PageTitle");
+            page.PageTitle = "Leaderboard";
  
            return View(PathHelper.GetThemeViewPath("Leaderboard"), page);
         }
@@ -702,7 +702,7 @@ namespace Dialogue.Logic.Controllers
                     Activities = activities,
                     PageIndex = pageIndex,
                     TotalCount = activities.TotalCount,
-                    PageTitle = Lang("Activity.PageTitle")
+                    PageTitle = "Activity"
                 };
 
                 return View(PathHelper.GetThemeViewPath("Activity"), viewModel);
@@ -756,7 +756,7 @@ namespace Dialogue.Logic.Controllers
                     }
                 }
 
-                return new RssResult(rssTopics, Lang("Rss.LatestTopics.Title"), Lang("Rss.LatestTopics.Description"));
+                return new RssResult(rssTopics, "Rss LatestTopics", "Latest Topics Rss Feed");
             }
 
         }
@@ -799,12 +799,12 @@ namespace Dialogue.Logic.Controllers
                         }
                                                ));
 
-                        return new RssResult(rssTopics, string.Format(Lang("Rss.Category.Title"), category.Name),
-                                             string.Format(Lang("Rss.Category.Description"), category.Name));
+                        return new RssResult(rssTopics, string.Format("Rss Category {0}", category.Name),
+                                             string.Format("Rss Category Description {0}", category.Name));
                     }
                 }
 
-                return ErrorToHomePage(Lang("Errors.NothingToDisplay"));
+                return ErrorToHomePage("Nothing To Display");
             }
         }
 
@@ -829,7 +829,7 @@ namespace Dialogue.Logic.Controllers
                         rssActivities.Add(new RssItem
                         {
                             Description = badgeActivity.Badge.Description,
-                            Title = string.Concat(badgeActivity.User.UserName, " ", Lang("Activity.UserAwardedBadge"), " ", badgeActivity.Badge.DisplayName, " ", Lang("Activity.Badge")),
+                            Title = string.Concat(badgeActivity.User.UserName, " ", "User Awarded Badge", " ", badgeActivity.Badge.DisplayName, " ", "Badge"),
                             PublishedDate = badgeActivity.ActivityMapped.Timestamp,
                             RssImage = AppHelpers.ReturnBadgeUrl(badgeActivity.Badge.Image).Replace("~", ""),
                             Link = activityLink
@@ -841,7 +841,7 @@ namespace Dialogue.Logic.Controllers
                         rssActivities.Add(new RssItem
                         {
                             Description = string.Empty,
-                            Title = Lang("Activity.UserJoined"),
+                            Title = "User Joined",
                             PublishedDate = memberJoinedActivity.ActivityMapped.Timestamp,
                             RssImage = memberJoinedActivity.User.MemberImage(AppConstants.GravatarPostSize),
                             Link = activityLink
@@ -853,7 +853,7 @@ namespace Dialogue.Logic.Controllers
                         rssActivities.Add(new RssItem
                         {
                             Description = string.Empty,
-                            Title = Lang("Activity.ProfileUpdated"),
+                            Title = "Profile Updated",
                             PublishedDate = profileUpdatedActivity.ActivityMapped.Timestamp,
                             RssImage = profileUpdatedActivity.User.MemberImage(AppConstants.GravatarPostSize),
                             Link = activityLink
@@ -862,7 +862,7 @@ namespace Dialogue.Logic.Controllers
 
                 }
 
-                return new RssResult(rssActivities, Lang("Rss.LatestActivity.Title"), Lang("Rss.LatestActivity.Description"));
+                return new RssResult(rssActivities, "Rss Latest Activity", "Latest Rss Activity");
             }
         }
     }
