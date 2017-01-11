@@ -68,7 +68,10 @@ namespace Dialogue.Logic.Controllers
                         foreach (var subCategory in category.SubCategories)
                         {
                             var permissionSet = ServiceFactory.PermissionService.GetPermissions(subCategory, _usersRole);
-                            subCatViewModel.AllPermissionSets.Add(subCategory, permissionSet);
+
+							subCategory.LatestTopic = ServiceFactory.TopicService.GetPagedTopicsByCategory(1, Settings.TopicsPerPage, int.MaxValue, subCategory.Id).FirstOrDefault();
+							subCategory.TopicCount = ServiceFactory.TopicService.GetTopicCountByCategory(subCategory.Id);
+							subCatViewModel.AllPermissionSets.Add(subCategory, permissionSet);
                         }
                         viewModel.SubCategories = subCatViewModel;
                     }
