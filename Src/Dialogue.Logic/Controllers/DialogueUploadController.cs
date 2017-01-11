@@ -94,7 +94,7 @@ namespace Dialogue.Logic.Controllers
                             unitOfWork.Commit();
 
                             // Redirect to the topic with a success message
-                            message.Message = Lang("Post.FilesUploaded");
+                            message.Message = "Files Uploaded";
                             message.MessageType = GenericMessages.Success;
                             ShowMessage(message);
 
@@ -164,7 +164,7 @@ namespace Dialogue.Logic.Controllers
                         //Commit
                         unitOfWork.Commit();
 
-                        message.Message = Lang("Post.FileSuccessfullyDeleted");
+                        message.Message = "File Successfully Deleted";
                         message.MessageType = GenericMessages.Success;
                         ShowMessage(message);
 

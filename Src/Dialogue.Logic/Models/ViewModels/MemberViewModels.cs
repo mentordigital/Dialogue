@@ -15,17 +15,17 @@ namespace Dialogue.Logic.Models.ViewModels
     public class RegisterViewModel
     {
         [Required]
-        [DialogueDisplayName("Members.Label.Username")]
+        [DialogueDisplayName("Username")]
         public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.EmailAddress)]
-        [DialogueDisplayName("Members.Label.EmailAddress")]
+        [DialogueDisplayName("Email Address")]
         public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [DialogueDisplayName("Members.Label.Password ")]
+        [DialogueDisplayName("Password ")]
         public string Password { get; set; }
 
         public string SpamAnswer { get; set; }
@@ -74,51 +74,51 @@ namespace Dialogue.Logic.Models.ViewModels
         public int Id { get; set; }
 
         [Required]
-        [DialogueDisplayName("Members.Label.Username")]
+        [DialogueDisplayName("Username")]
         [StringLength(150, MinimumLength = 2)]
         public string UserName { get; set; }
 
-        [DialogueDisplayName("Members.Label.EmailAddress")]
+        [DialogueDisplayName("Email Address")]
         [DataType(DataType.EmailAddress)]
         [Required]
         public string Email { get; set; }
 
-        [DialogueDisplayName("Members.Label.Signature")]
+        [DialogueDisplayName("Signature")]
         [StringLength(1000)]
         [AllowHtml]
         public string Signature { get; set; }
 
-        [DialogueDisplayName("Members.Label.Website")]
+        [DialogueDisplayName("Website")]
         [Url]
         [StringLength(100)]
         public string Website { get; set; }
 
-        [DialogueDisplayName("Members.Label.UploadNewAvatar")]
+        [DialogueDisplayName("Upload New Avatar")]
         public HttpPostedFileBase[] Files { get; set; }
 
         public string Avatar { get; set; }
 
-        [DialogueDisplayName("Members.Label.Twitter")]
+        [DialogueDisplayName("Twitter")]
         public string Twitter { get; set; }
 
         // Admin Stuff
 
-        [DialogueDisplayName("Members.Label.DisableEmailNotifications")]
+        [DialogueDisplayName("Disable Email Notifications")]
         public bool DisableEmailNotifications { get; set; }
 
-        [DialogueDisplayName("Members.Label.DisablePosting")]
+        [DialogueDisplayName("Disable Posting")]
         public bool DisablePosting { get; set; }
 
-        [DialogueDisplayName("Members.Label.DisablePrivateMessages")]
+        [DialogueDisplayName("Disable Private Messages")]
         public bool DisablePrivateMessages { get; set; }
 
-        [DialogueDisplayName("Members.Label.DisableFileUploads")]
+        [DialogueDisplayName("Disable File Uploads")]
         public bool DisableFileUploads { get; set; }
 
-        [DialogueDisplayName("Members.Label.CanEditOtherMembers")]
+        [DialogueDisplayName("Can Edit Other Members")]
         public bool CanEditOtherMembers { get; set; }
 
-        [DialogueDisplayName("Members.Label.Comment")]
+        [DialogueDisplayName("Comment")]
         public string Comments { get; set; }
     }
 
@@ -140,17 +140,17 @@ namespace Dialogue.Logic.Models.ViewModels
     {
         [Required]
         [DataType(DataType.Password)]
-        [DialogueDisplayName("Members.Label.CurrentPassword")]
+        [DialogueDisplayName("Current Password")]
         public string OldPassword { get; set; }
 
         [Required]
         [StringLength(100, MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [DialogueDisplayName("Members.Label.NewPassword")]
+        [DialogueDisplayName("New Password")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [DialogueDisplayName("Members.Label.ConfirmNewPassword")]
+        [DialogueDisplayName("Confirm New Password")]
         [System.ComponentModel.DataAnnotations.Compare("NewPassword")]
         public string ConfirmPassword { get; set; }
     }

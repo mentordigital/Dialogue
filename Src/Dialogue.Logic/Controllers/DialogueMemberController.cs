@@ -58,7 +58,7 @@ namespace Dialogue.Logic.Controllers
                     User = member,
 					LoggedOnUser = CurrentMember,
 					LoggedOnUserId = loggedonId,
-                    PageTitle = string.Concat(member.UserName, Lang("Members.ProfileTitle")),
+                    PageTitle = string.Concat(member.UserName, "Profile"),
                     PostCount = member.PostCount
                 };
 
@@ -114,7 +114,7 @@ namespace Dialogue.Logic.Controllers
                     {
                         ShowMessage(new GenericMessageViewModel
                         {
-                            Message = Lang("Members.ChangePassword.Success"),
+                            Message = "Change Password Success",
                             MessageType = GenericMessages.Success
                         });
                         return Redirect(Urls.GenerateUrl(Urls.UrlType.ChangePassword));
@@ -127,7 +127,7 @@ namespace Dialogue.Logic.Controllers
             }
             ShowMessage(new GenericMessageViewModel
             {
-                Message = Lang("Members.ChangePassword.Error"),
+                Message = "Change Password Error",
                 MessageType = GenericMessages.Danger
             });
             return Redirect(Urls.GenerateUrl(Urls.UrlType.ChangePassword));
@@ -148,7 +148,7 @@ namespace Dialogue.Logic.Controllers
                 {
                     ShowMessage(new GenericMessageViewModel
                     {
-                        Message = Lang("Errors.BannedLink"),
+                        Message = "Banned Link",
                         MessageType = GenericMessages.Danger
                     });
                     return Redirect(userEditUrl);
@@ -205,7 +205,7 @@ namespace Dialogue.Logic.Controllers
                     if (ServiceFactory.BannedEmailService.EmailIsBanned(sanitisedEmail))
                     {                        
                         unitOfWork.Rollback();
-                        ModelState.AddModelError(string.Empty, Lang("Error.EmailIsBanned"));
+                        ModelState.AddModelError(string.Empty, "Email Is Banned");
                         ShowModelErrors();
                         return Redirect(userEditUrl);
                     }
@@ -214,7 +214,7 @@ namespace Dialogue.Logic.Controllers
                     if (userWithSameEmail != null && userWithSameEmail.UserName != user.UserName)
                     {
                         unitOfWork.Rollback();
-                        ModelState.AddModelError(string.Empty, Lang("Members.Errors.DuplicateEmail"));
+                        ModelState.AddModelError(string.Empty, "Duplicate Email");
                         ShowModelErrors();
                         return Redirect(userEditUrl);
                     }
@@ -231,7 +231,7 @@ namespace Dialogue.Logic.Controllers
                     if (ServiceFactory.MemberService.Get(sanitisedUsername) != null)
                     {
                         unitOfWork.Rollback();
-                        ModelState.AddModelError(string.Empty, Lang("Members.Errors.DuplicateUserName"));
+                        ModelState.AddModelError(string.Empty, "Duplicate User Name");
                         ShowModelErrors();
                         return Redirect(userEditUrl);
                     }
@@ -246,7 +246,7 @@ namespace Dialogue.Logic.Controllers
 
                 ShowMessage(new GenericMessageViewModel
                 {
-                    Message = Lang("Member.ProfileUpdated"),
+                    Message = "Profile Updated",
                     MessageType = GenericMessages.Success
                 });
 
@@ -316,7 +316,7 @@ namespace Dialogue.Logic.Controllers
                     {
                         ShowMessage(new GenericMessageViewModel
                         {
-                            Message = Lang("Errors.BannedLink"),
+                            Message = "Banned Link",
                             MessageType = GenericMessages.Danger
                         });
                         return Redirect(user.Url);
@@ -331,7 +331,7 @@ namespace Dialogue.Logic.Controllers
                     ServiceFactory.ReportService.MemberReport(report);
                     ShowMessage(new GenericMessageViewModel
                     {
-                        Message = Lang("Report.ReportSent"),
+                        Message = "Report Sent",
                         MessageType = GenericMessages.Success
                     });
                     return Redirect(user.Url);
@@ -361,7 +361,7 @@ namespace Dialogue.Logic.Controllers
                         // SAVE UOW
                         var message = new GenericMessageViewModel
                         {
-                            Message = Lang("Member.SpammerIsKilled"),
+                            Message = "Spammer Is Killed",
                             MessageType = GenericMessages.Success
                         };
 
@@ -403,7 +403,7 @@ namespace Dialogue.Logic.Controllers
 
                         var message = new GenericMessageViewModel
                         {
-                            Message = Lang("Member.IsBanned"),
+                            Message = "Is Banned",
                             MessageType = GenericMessages.Success
                         };
 
@@ -442,7 +442,7 @@ namespace Dialogue.Logic.Controllers
 
                         var message = new GenericMessageViewModel
                         {
-                            Message = Lang("Member.IsUnBanned"),
+                            Message = "Is Unbanned",
                             MessageType = GenericMessages.Success
                         };
 
@@ -478,7 +478,7 @@ namespace Dialogue.Logic.Controllers
                 {
                     ShowMessage(new GenericMessageViewModel
                     {
-                        Message = Lang("Member.HasNewPrivateMessages"),
+                        Message = "Has New Private Messages",
                         MessageType = GenericMessages.Info
                     });
                 }

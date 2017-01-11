@@ -546,7 +546,7 @@ namespace Dialogue.Logic.Application
                 if (!allowedFileExtensions.Contains(fileExtension))
                 {
                     upResult.UploadSuccessful = false;
-                    upResult.ErrorMessage = Lang("Post.UploadBannedFileExtension");
+                    upResult.ErrorMessage = "Upload Banned File Extension";
                     return upResult;
                 }
             }
@@ -624,7 +624,7 @@ namespace Dialogue.Logic.Application
                 if (!allowedFileExtensions.Contains(fileExtension))
                 {
                     upResult.UploadSuccessful = false;
-                    upResult.ErrorMessage = Lang("Post.UploadBannedFileExtension");
+                    upResult.ErrorMessage = "Upload Banned File Extension";
                     return upResult;
                 }
             }

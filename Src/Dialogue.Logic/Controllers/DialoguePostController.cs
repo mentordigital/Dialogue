@@ -132,7 +132,7 @@ namespace Dialogue.Logic.Controllers
 				var urlReferrer = Request.UrlReferrer;
 				if (urlReferrer != null)
 				{
-					return Redirect(urlReferrer.AbsoluteUri);
+					return Redirect(urlReferrer.AbsolutePath);
 				}
 				return PartialView(PathHelper.GetThemePartialViewPath("Post"), viewModel);
             }
