@@ -50,7 +50,7 @@ namespace Dialogue.Logic.Application.ExtensionMethods
             var containerdiv = new TagBuilder("div");
             containerdiv.AddCssClass("paginationholder");
             var container = new TagBuilder("ul");
-            container.AddCssClass("pagination");
+            container.AddCssClass("pager");
 
             // calculate the last page group number starting from the current page  	
             // until we hit the next whole divisible number  	

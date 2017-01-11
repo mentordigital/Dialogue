@@ -145,8 +145,15 @@ namespace Dialogue.Logic.Controllers
 			if (!string.IsNullOrEmpty(adminEmail))
 			{
 				var sb = new StringBuilder();
-				sb.AppendFormat("<p>{0}</p>", string.Format("{0} have new posts that need moderation", topic.Name));
-				sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain.TrimEnd('/'), topic.Url));
+				sb.AppendFormat("<p>{0}</p>", string.Format("Topic ({0}) has new posts that need moderation", topic.Name));
+
+				sb.AppendFormat("<p>{0}</p>", string.Concat(AppHelpers.ReturnCurrentDomain(), topic.Url));
+
+				sb.AppendFormat("<p>Click below to access the authorise page (you may need to login)</p>");
+				sb.AppendFormat("<p>{0}</p>",
+				string.Concat(AppHelpers.ReturnCurrentDomain(),
+				Urls.GenerateUrl(Urls.UrlType.Authorise)));
+
 				var email = new Email
 				{
 					Body = ServiceFactory.EmailService.EmailTemplate(adminEmail, sb.ToString()),

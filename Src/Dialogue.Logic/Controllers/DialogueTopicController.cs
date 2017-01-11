@@ -484,7 +484,7 @@ namespace Dialogue.Logic.Controllers
 							// Check for moderation
 							if (category.ModerateAllTopicsInThisCategory || (currentMemberPostCount < 5 && !hasBadge))
                             {
-								NotifyCategoryAdmin(category);
+								NotifyCategoryAdmin(topic);
 								topic.Pending = true;
                                 moderate = true;
                             }
@@ -604,15 +604,21 @@ namespace Dialogue.Logic.Controllers
             return Redirect(Urls.GenerateUrl(Urls.UrlType.TopicCreate));
         }
 
-		private void NotifyCategoryAdmin(Category cat)
+		private void NotifyCategoryAdmin(Topic topic)
 		{
-			var adminEmail = cat.ModeratorEmailAddress;
+			var adminEmail = topic.Category.ModeratorEmailAddress;
 
 			if(!string.IsNullOrEmpty(adminEmail))
 			{
 				var sb = new StringBuilder();
-				sb.AppendFormat("<p>{0}</p>", string.Format("{0} New Topics", cat.Name));
-				sb.AppendFormat("<p>{0}</p>", string.Concat(Settings.ForumRootUrlWithDomain.TrimEnd('/'), cat.Url));
+				sb.AppendFormat("<p>{0}</p>", string.Format("New topic in {0} that needs moderation ({1})", topic.Category.Name, topic.Name));
+				sb.AppendFormat("<p>Click below to access the authorise page (you may need to login)</p>");
+
+				sb.AppendFormat("<p>{0}</p>", 
+					string.Concat(AppHelpers.ReturnCurrentDomain(),
+					Urls.GenerateUrl(Urls.UrlType.Authorise)));
+
+
 				var email = new Email
 				{
 					Body = ServiceFactory.EmailService.EmailTemplate(adminEmail, sb.ToString()),
