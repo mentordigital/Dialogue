@@ -16,12 +16,21 @@ namespace Dialogue.Logic.Controllers
     #region Render Controllers
     public partial class DialogueCategoryController : BaseRenderController
     {
-        private readonly IMemberGroup _usersRole;
-
-        public DialogueCategoryController()
+        //private readonly IMemberGroup _usersRole;
+		private readonly List<IMemberGroup> _usersRoles;
+		public DialogueCategoryController()
         {           
-            _usersRole = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
-        }
+           // _usersRole = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
+			_usersRoles = new List<IMemberGroup>();
+			if(CurrentMember == null)
+			{
+				_usersRoles.Add(ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName));
+			}
+			else
+			{
+				_usersRoles = CurrentMember.Groups;
+			}
+		}
 
         public override ActionResult Index(RenderModel model)
         {
@@ -35,7 +44,7 @@ namespace Dialogue.Logic.Controllers
                 var pageIndex = AppHelpers.ReturnCurrentPagingNo();
 
                 // check the user has permission to this category
-                var permissions = ServiceFactory.PermissionService.GetPermissions(category, _usersRole);
+                var permissions = ServiceFactory.PermissionService.GetPermissions(category, _usersRoles);
 
                 if (!permissions[AppConstants.PermissionDenyAccess].IsTicked)
                 {
@@ -67,7 +76,7 @@ namespace Dialogue.Logic.Controllers
                         };
                         foreach (var subCategory in category.SubCategories)
                         {
-                            var permissionSet = ServiceFactory.PermissionService.GetPermissions(subCategory, _usersRole);
+                            var permissionSet = ServiceFactory.PermissionService.GetPermissions(subCategory, _usersRoles);
 
 							subCategory.LatestTopic = ServiceFactory.TopicService.GetPagedTopicsByCategory(1, Settings.TopicsPerPage, int.MaxValue, subCategory.Id).FirstOrDefault();
 							subCategory.TopicCount = ServiceFactory.TopicService.GetTopicCountByCategory(subCategory.Id);
@@ -88,12 +97,21 @@ namespace Dialogue.Logic.Controllers
     #region Surface Controllers
     public partial class DialogueCategorySurfaceController : BaseSurfaceController
     {
-        private readonly IMemberGroup _usersRole;
-
-        public DialogueCategorySurfaceController()
+        //private readonly IMemberGroup _usersRole;
+		private readonly List<IMemberGroup> _usersRoles;
+		public DialogueCategorySurfaceController()
         {
-            _usersRole = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
-        }
+           // _usersRole = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
+			_usersRoles = new List<IMemberGroup>();
+			if (CurrentMember == null)
+			{
+				_usersRoles.Add(ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName));
+			}
+			else
+			{
+				_usersRoles = CurrentMember.Groups;
+			}
+		}
 
         [ChildActionOnly]
         public PartialViewResult ListCategorySideMenu()
@@ -107,7 +125,7 @@ namespace Dialogue.Logic.Controllers
             {
                 foreach (var category in ServiceFactory.CategoryService.GetAllMainCategories())
                 {
-                    var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _usersRole);
+                    var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _usersRoles);
                     catViewModel.AllPermissionSets.Add(category, permissionSet);
                 }
             }

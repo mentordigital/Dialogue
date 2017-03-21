@@ -17,12 +17,21 @@ namespace Dialogue.Logic.Controllers
     #region MVC Controllers
     public partial class DialoguePostSurfaceController : BaseSurfaceController
     {
-        private readonly IMemberGroup _membersGroup;
-
-        public DialoguePostSurfaceController()
+        //private readonly IMemberGroup _membersGroup;
+		private readonly List<IMemberGroup> _membersGroups;
+		public DialoguePostSurfaceController()
         {
-            _membersGroup = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
-        }
+            //_membersGroup = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
+			_membersGroups = new List<IMemberGroup>();
+			if (CurrentMember == null)
+			{
+				_membersGroups.Add(ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName));
+			}
+			else
+			{
+				_membersGroups = CurrentMember.Groups;
+			}
+		}
 
         [HttpPost]
         [Authorize]
@@ -224,7 +233,7 @@ namespace Dialogue.Logic.Controllers
                 var category = ServiceFactory.CategoryService.Get(topic.CategoryId);
 
                 // get the users permissions
-                var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroup);
+                var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
 
                 if (post.MemberId == CurrentMember.Id || permissions[AppConstants.PermissionModerate].IsTicked)
                 {
@@ -336,7 +345,7 @@ namespace Dialogue.Logic.Controllers
                 topic.Category = category;
 
                 // get the users permissions
-                var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroup);
+                var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
 
                 if (post.MemberId == CurrentMember.Id || permissions[AppConstants.PermissionModerate].IsTicked)
                 {

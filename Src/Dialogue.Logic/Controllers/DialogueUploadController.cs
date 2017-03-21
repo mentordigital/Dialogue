@@ -8,17 +8,27 @@ using Dialogue.Logic.Models;
 using Dialogue.Logic.Models.ViewModels;
 using Dialogue.Logic.Services;
 using Umbraco.Core.Models;
+using System.Collections.Generic;
 
 namespace Dialogue.Logic.Controllers
 {
     public partial class DialogueUploadSurfaceController : BaseSurfaceController
     {
-        private readonly IMemberGroup _membersGroup;
-
-        public DialogueUploadSurfaceController()
+        //private readonly IMemberGroup _membersGroup;
+		private readonly List<IMemberGroup> _membersGroups;
+		public DialogueUploadSurfaceController()
         {
-            _membersGroup = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
-        }
+            //_membersGroup = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
+			_membersGroups = new List<IMemberGroup>();
+			if (CurrentMember == null)
+			{
+				_membersGroups.Add(ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName));
+			}
+			else
+			{
+				_membersGroups = CurrentMember.Groups;
+			}
+		}
 
         [HttpPost]
         [Authorize]
@@ -49,7 +59,7 @@ namespace Dialogue.Logic.Controllers
 
                             // Get the permissions for this category, and check they are allowed to update and 
                             // not trying to be a sneaky mofo
-                            var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroup);
+                            var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
                             if (permissions[AppConstants.PermissionAttachFiles].IsTicked == false && CurrentMember.DisableFileUploads != true)
                             {
                                 return ErrorToHomePage("No Permission");
@@ -135,7 +145,10 @@ namespace Dialogue.Logic.Controllers
                         var post = uploadedFile.Post;
                         topic = post.Topic;
 
-                        if (_membersGroup.Name == AppConstants.AdminRoleName || uploadedFile.MemberId == CurrentMember.Id)
+						var adminGroup = _membersGroups.Where(x => x.Name == AppConstants.AdminRoleName).FirstOrDefault();
+
+
+						if (adminGroup != null || uploadedFile.MemberId == CurrentMember.Id)
                         {
                             // Ok to delete file
                             // Remove it from the post

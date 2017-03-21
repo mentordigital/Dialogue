@@ -75,12 +75,21 @@ namespace Dialogue.Logic.Controllers
 
     public partial class DialogueMemberSurfaceController : BaseSurfaceController
     {
-        private readonly IMemberGroup _membersGroup;
-
-        public DialogueMemberSurfaceController()
+       // private readonly IMemberGroup _membersGroup;
+		private readonly List<IMemberGroup> _membersGroups;
+		public DialogueMemberSurfaceController()
         {
-            _membersGroup = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
-        }
+            //_membersGroup = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
+			_membersGroups = new List<IMemberGroup>();
+			if (CurrentMember == null)
+			{
+				_membersGroups.Add(ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName));
+			}
+			else
+			{
+				_membersGroups = CurrentMember.Groups;
+			}
+		}
 
         [HttpPost]
         [Authorize]
@@ -515,7 +524,7 @@ namespace Dialogue.Logic.Controllers
                     // loop through the categories and get the permissions
                     foreach (var category in categories)
                     {
-                        var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _membersGroup);
+                        var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
                         viewModel.AllPermissionSets.Add(category, permissionSet);
                     }
 

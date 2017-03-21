@@ -19,12 +19,21 @@ namespace Dialogue.Logic.Controllers
     #region Render Controllers
     public partial class DialogueTopicController : BaseRenderController
     {
-        private readonly IMemberGroup _membersGroup;
-
-        public DialogueTopicController()
+       // private readonly IMemberGroup _membersGroup;
+		private readonly List<IMemberGroup> _membersGroups;
+		public DialogueTopicController()
         {
-            _membersGroup = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
-        }
+           // _membersGroup = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
+			_membersGroups = new List<IMemberGroup>();
+			if (CurrentMember == null)
+			{
+				_membersGroups.Add(ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName));
+			}
+			else
+			{
+				_membersGroups = CurrentMember.Groups;
+			}
+		}
 
         /// <summary>
         /// Used to render the Topic (virtual node)
@@ -87,7 +96,7 @@ namespace Dialogue.Logic.Controllers
                                                                   orderBy);
 
                     // Get the permissions for the category that this topic is in
-                    var permissions = ServiceFactory.PermissionService.GetPermissions(topic.Category, _membersGroup);
+                    var permissions = ServiceFactory.PermissionService.GetPermissions(topic.Category, _membersGroups);
 
                     // If this user doesn't have access to this topic then
                     // redirect with message
@@ -201,12 +210,21 @@ namespace Dialogue.Logic.Controllers
     public partial class DialogueTopicSurfaceController : BaseSurfaceController
     {
 
-        private readonly IMemberGroup _membersGroup;
-
-        public DialogueTopicSurfaceController()
+        //private readonly IMemberGroup _membersGroup;
+		private readonly List<IMemberGroup> _membersGroups;
+		public DialogueTopicSurfaceController()
         {
-            _membersGroup = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
-        }
+           // _membersGroup = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
+			_membersGroups = new List<IMemberGroup>();
+			if (CurrentMember == null)
+			{
+				_membersGroups.Add(ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName));
+			}
+			else
+			{
+				_membersGroups = CurrentMember.Groups;
+			}
+		}
 
 
         [HttpPost]
@@ -240,7 +258,7 @@ namespace Dialogue.Logic.Controllers
             var topic = ServiceFactory.TopicService.Get(getMorePostsViewModel.TopicId);
 
             // Get the permissions for the category that this topic is in
-            var permissions = ServiceFactory.PermissionService.GetPermissions(topic.Category, _membersGroup);
+            var permissions = ServiceFactory.PermissionService.GetPermissions(topic.Category, _membersGroups);
 
             // If this user doesn't have access to this topic then just return nothing
             if (permissions[AppConstants.PermissionDenyAccess].IsTicked)
@@ -330,7 +348,7 @@ namespace Dialogue.Logic.Controllers
                 // loop through the categories and get the permissions
                 foreach (var category in categories)
                 {
-                    var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _membersGroup);
+                    var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
                     viewModel.AllPermissionSets.Add(category, permissionSet);
                 }
                 return PartialView(PathHelper.GetThemePartialViewPath("LatestTopics"), viewModel);
@@ -392,7 +410,7 @@ namespace Dialogue.Logic.Controllers
                     category = ServiceFactory.CategoryService.Get(topicViewModel.Category);
 
                     // First check this user is allowed to create topics in this category
-                    var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroup);
+                    var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
 
                     // Check this users role has permission to create a post
                     if (permissions[AppConstants.PermissionDenyAccess].IsTicked || permissions[AppConstants.PermissionReadOnly].IsTicked || !permissions[AppConstants.PermissionCreateTopics].IsTicked)
@@ -694,7 +712,7 @@ namespace Dialogue.Logic.Controllers
                         // Now check to see if they have access to any categories
                         // if so, check they are allowed to create topics - If no to either set to false
                         viewModel.UserCanPostTopics = false;
-                        var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _membersGroup);
+                        var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
                         if (permissionSet[AppConstants.PermissionCreateTopics].IsTicked)
                         {
                             viewModel.UserCanPostTopics = true;

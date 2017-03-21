@@ -376,7 +376,7 @@ namespace Dialogue.Logic.Services
         public Post AddNewPost(string postContent, Topic topic, Member user, out PermissionSet permissions)
         {
             // Get the permissions for the category that this topic is in
-            permissions = ServiceFactory.PermissionService.GetPermissions(topic.Category, user.Groups.FirstOrDefault());
+            permissions = ServiceFactory.PermissionService.GetPermissions(topic.Category, user.Groups);
 
             // Check this users role has permission to create a post
             if (permissions[AppConstants.PermissionDenyAccess].IsTicked || permissions[AppConstants.PermissionReadOnly].IsTicked)

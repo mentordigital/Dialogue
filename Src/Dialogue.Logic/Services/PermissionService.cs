@@ -149,26 +149,56 @@ namespace Dialogue.Logic.Services
         /// <param name="category"></param>
         /// <param name="memberGroup"></param>
         /// <returns></returns>
-        private PermissionSet GetOtherPermissions(Category category, IMemberGroup memberGroup)
+        private PermissionSet GetOtherPermissions(Category category, List<IMemberGroup> memberGroups)
         {
             // Get all permissions
             var permissionList = GetAll();
 
-            // Get the known permissions for this role and category
-            var categoryRow = ServiceFactory.CategoryPermissionService.GetCategoryRow(memberGroup.Id, category.Id);
-            //var categoryRowPermissions = categoryRow.ToDictionary(catRow => catRow.Permission);
+			// Get the known permissions for this role and category
+			var permissions = new List<CategoryPermission>();
+			foreach (var memberGroup in memberGroups)
+			{
+				var categoryRow = ServiceFactory.CategoryPermissionService.GetCategoryRow(memberGroup.Id, category.Id);
+				//var categoryRowPermissions = categoryRow.ToDictionary(catRow => catRow.Permission);
 
-            // Load up the results with the permisions for this role / cartegory. A null entry for a permissions results in a new
-            // record with a false value
-            var permissions = new List<CategoryPermission>();
-            foreach (var permission in permissionList)
-            {
-                permissions.Add(categoryRow.ContainsKey(permission)
-                                    ? categoryRow[permission]
-                                    : new CategoryPermission { Category = category, MemberGroup = memberGroup, IsTicked = false, Permission = permission });
-            }
+				// Load up the results with the permisions for this role / cartegory. A null entry for a permissions results in a new
+				// record with a false value
+				
+				foreach (var permission in permissionList)
+				{
+					if(categoryRow.ContainsKey(permission))
+					{
+						var existingPermission = permissions.Where(x => x.Permission.Name == permission.Name).FirstOrDefault();
 
-            var permissionSet = new PermissionSet(permissions);
+						if (existingPermission == null)
+						{
+							permissions.Add(categoryRow[permission]);
+						}
+						else
+						{
+							existingPermission.IsTicked = true;
+						}			
+					}
+					else
+					{
+						var newPermision = new CategoryPermission { Category = category, MemberGroup = memberGroup, IsTicked = false, Permission = permission };
+
+						var existingPermission = permissions.Where(x => x.Permission.Name == permission.Name).FirstOrDefault();
+
+						if (existingPermission == null)
+						{
+							permissions.Add(newPermision);
+						}
+					}
+
+					//permissions.Add(categoryRow.ContainsKey(permission)
+					//					? categoryRow[permission]
+					//					: new CategoryPermission { Category = category, MemberGroup = memberGroup, IsTicked = false, Permission = permission });
+				}
+			}
+
+
+			var permissionSet = new PermissionSet(permissions);
 
             return permissionSet;
 
@@ -180,34 +210,39 @@ namespace Dialogue.Logic.Services
         /// <param name="category"></param>
         /// <param name="memberGroup"></param>
         /// <returns></returns>
-        public PermissionSet GetPermissions(Category category, IMemberGroup memberGroup)
-        {
-            if (memberGroup == null)
+       // public PermissionSet GetPermissions(Category category, IMemberGroup memberGroup)
+		public PermissionSet GetPermissions(Category category, List<IMemberGroup> memberGroups)
+		{
+            if (memberGroups == null)
             {
-                // This can only happen if the user has deleted a group, and not reassigned them
-                // so in this occasion we just set them to a guest until the admin assigns them a new group
-                memberGroup = ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName);
+				memberGroups = new List<IMemberGroup>();
+				memberGroups.Add(ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName));
             }
 
-            // Pass the role in to see select which permissions to apply
-            // Going to cache this per request, just to help with performance
-            var objectContextKey = string.Concat(HttpContext.Current.GetHashCode().ToString("x"), "-", category.Id, "-", memberGroup.Id);
+			// Pass the role in to see select which permissions to apply
+			// Going to cache this per request, just to help with performance
+			var firstGroup = memberGroups.First();
+
+
+			var objectContextKey = string.Concat(HttpContext.Current.GetHashCode().ToString("x"), "-", category.Id, "-", firstGroup.Id);
             if (!HttpContext.Current.Items.Contains(objectContextKey))
             {
-                switch (memberGroup.Name)
-                {
-                    case AppConstants.AdminRoleName:
-                        _permissions = GetAdminPermissions(category, memberGroup);
-                        break;
-                    case AppConstants.GuestRoleName:
-                        _permissions = GetGuestPermissions(category, memberGroup);
-                        break;
-                    default:
-                        _permissions = GetOtherPermissions(category, memberGroup);
-                        break;
-                }
+				var adminGroup = memberGroups.Where(x => x.Name == AppConstants.AdminRoleName).FirstOrDefault();
+				var guestGroup = memberGroups.Where(x => x.Name == AppConstants.GuestRoleName).FirstOrDefault();
+				if (adminGroup != null)
+				{
+					_permissions = GetAdminPermissions(category, adminGroup);
+				}
+				else if (guestGroup != null)
+				{
+					_permissions = GetGuestPermissions(category, guestGroup);
+				}
+				else
+				{
+					_permissions = GetOtherPermissions(category, memberGroups);
+				}
 
-                HttpContext.Current.Items.Add(objectContextKey, _permissions);
+				HttpContext.Current.Items.Add(objectContextKey, _permissions);
             }
 
             return HttpContext.Current.Items[objectContextKey] as PermissionSet;

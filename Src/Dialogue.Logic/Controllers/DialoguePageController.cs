@@ -19,12 +19,21 @@ namespace Dialogue.Logic.Controllers
 {
     public partial class DialoguePageController : BaseRenderController
     {
-        private readonly IMemberGroup _membersGroup;
-
-        public DialoguePageController()
+        //private readonly IMemberGroup _membersGroup;
+		private readonly List<IMemberGroup> _membersGroups;
+		public DialoguePageController()
         {
-            _membersGroup = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
-        }
+			// _membersGroup = (CurrentMember == null ? ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName) : CurrentMember.Groups.FirstOrDefault());
+			_membersGroups = new List<IMemberGroup>();
+			if (CurrentMember == null)
+			{
+				_membersGroups.Add(ServiceFactory.MemberService.GetGroupByName(AppConstants.GuestRoleName));
+			}
+			else
+			{
+				_membersGroups = CurrentMember.Groups;
+			}
+		}
 
         /// <summary>
         /// Used to render virtual dialogue pages
@@ -201,7 +210,7 @@ namespace Dialogue.Logic.Controllers
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    var allowedCategories = ServiceFactory.CategoryService.GetAllowedCategories(_membersGroup).ToList();
+                    var allowedCategories = ServiceFactory.CategoryService.GetAllowedCategories(_membersGroups).ToList();
                     if (allowedCategories.Any() && CurrentMember.DisablePosting != true)
                     {
                         var viewModel = new CreateTopic(page)
@@ -306,7 +315,7 @@ namespace Dialogue.Logic.Controllers
                     // loop through the categories and get the permissions
                     foreach (var category in categories)
                     {
-                        var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _membersGroup);
+                        var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
                         viewModel.AllPermissionSets.Add(category, permissionSet);
                     }
 
@@ -585,7 +594,7 @@ namespace Dialogue.Logic.Controllers
                 var category = ServiceFactory.CategoryService.Get(topic.CategoryId);
 
                 // get the users permissions
-                var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroup);
+                var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
 
                 if (post.MemberId == CurrentMember.Id || permissions[AppConstants.PermissionModerate].IsTicked)
                 {
@@ -601,7 +610,7 @@ namespace Dialogue.Logic.Controllers
 
 
                         viewModel.Name = topic.Name;
-                        viewModel.Categories = ServiceFactory.CategoryService.GetAllowedCategories(_membersGroup).ToList();
+                        viewModel.Categories = ServiceFactory.CategoryService.GetAllowedCategories(_membersGroups).ToList();
                         if (topic.Poll != null && topic.Poll.PollAnswers.Any())
                         {
                             // Has a poll so add it to the view model
@@ -734,7 +743,7 @@ namespace Dialogue.Logic.Controllers
                 // loop through the categories and get the permissions
                 foreach (var category in categories)
                 {
-                    var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _membersGroup);
+                    var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
                     permissions.Add(category, permissionSet);
                 }
 
@@ -777,7 +786,7 @@ namespace Dialogue.Logic.Controllers
                     var category = ServiceFactory.CategoryService.Get(Convert.ToInt32(catId));
 
                     // check the user has permission to this category
-                    var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroup);
+                    var permissions = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
 
                     if (!permissions[AppConstants.PermissionDenyAccess].IsTicked)
                     {
