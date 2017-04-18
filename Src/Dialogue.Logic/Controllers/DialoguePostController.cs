@@ -97,8 +97,9 @@ namespace Dialogue.Logic.Controllers
                     {
                         unitOfWork.Rollback();
                         LogError(ex);
-                        throw new Exception("Something went wrong. Please try again");
-                    }
+						//throw new Exception("Something went wrong. Please try again");
+						return ErrorToHomePage("Something went wrong. Please try again");
+					}
                 }
                 else
                 {
