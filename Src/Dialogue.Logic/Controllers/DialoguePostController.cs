@@ -97,7 +97,7 @@ namespace Dialogue.Logic.Controllers
                     {
                         unitOfWork.Rollback();
                         LogError(ex);
-                        throw new Exception(Lang("Errors.GenericMessage"));
+                        throw new Exception("Something went wrong. Please try again");
                     }
                 }
                 else
@@ -325,7 +325,7 @@ namespace Dialogue.Logic.Controllers
                     return Redirect(post.Topic.Url);
                 }
             }
-            return ErrorToHomePage(Lang("Errors.GenericMessage"));
+            return ErrorToHomePage("Spam reporting is not enabled");
         }
 
         [HttpPost]

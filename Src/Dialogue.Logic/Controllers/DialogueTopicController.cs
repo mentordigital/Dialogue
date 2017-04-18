@@ -54,7 +54,7 @@ namespace Dialogue.Logic.Controllers
 
             if (string.IsNullOrEmpty(topicname))
             {
-                return ErrorToHomePage(Lang("Errors.GenericMessage"));
+                return ErrorToHomePage("Please enter a Topic name");
             }
 
             // Set the page index
@@ -199,7 +199,7 @@ namespace Dialogue.Logic.Controllers
                 }
 
             }
-            return ErrorToHomePage(Lang("Errors.GenericMessage"));
+            return ErrorToHomePage("Something went wrong. Please try again");
         }
 
     }
@@ -564,12 +564,12 @@ namespace Dialogue.Logic.Controllers
                             {
                                 unitOfWork.Rollback();
                                 LogError(ex);
-                                ModelState.AddModelError(string.Empty, Lang("Errors.GenericMessage"));
+                                ModelState.AddModelError(string.Empty, "Something went wrong. Please try again");
                             }
                         }
                         else
                         {
-                            ModelState.AddModelError(string.Empty, Lang("Errors.GenericMessage"));
+                            ModelState.AddModelError(string.Empty, "Please enter some content");
                         }
                     }
                 }

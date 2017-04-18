@@ -69,7 +69,7 @@ namespace Dialogue.Logic.Controllers
 
                 }
             }
-            throw new Exception(Lang("Errors.GenericMessage"));
+            throw new Exception("Something went wrong. Please try again");
         }
 
         private string MarkPostUpOrDown(Post post, Member postWriter, Member voter, PostType postType)
@@ -176,12 +176,12 @@ namespace Dialogue.Logic.Controllers
                         {
                             unitOfWork.Rollback();
                             LogError(ex);
-                            throw new Exception(Lang("Errors.GenericMessage"));
+                            throw new Exception("Something went wrong. Please try again");
                         }
                     }
                     else
                     {
-                        throw new Exception(Lang("Errors.Generic"));
+                        throw new Exception("Something went wrong. Please try again");
                     }
 
                 }
