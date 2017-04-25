@@ -49,6 +49,11 @@ namespace Dialogue.Logic.Controllers
                 return ErrorToHomePage("Invalid Membername");
             }
 
+			if(!UserIsAuthenticated)
+			{
+				return ErrorToHomePage("Please log in");
+			}
+
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var member = ServiceFactory.MemberService.GetUserBySlug(membername, true);

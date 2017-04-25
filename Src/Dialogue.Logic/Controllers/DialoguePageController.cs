@@ -358,6 +358,12 @@ namespace Dialogue.Logic.Controllers
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
                     var user = ServiceFactory.MemberService.Get(Convert.ToInt32(id));
+					
+					if(CurrentMember == null || (CurrentMember != null && CurrentMember.Id.ToString() != id))
+					{
+						return ErrorToHomePage("Unauthorised");
+					}
+
                     var viewModel = new PageMemberEditViewModel(page)
                     {
                         MemberEditViewModel = new MemberEditViewModel
