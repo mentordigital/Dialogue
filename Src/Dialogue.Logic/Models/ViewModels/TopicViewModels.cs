@@ -47,6 +47,7 @@ namespace Dialogue.Logic.Models.ViewModels
         public bool UserCanPostTopics { get; set; }
         public int CategoryId { get; set; }
 		public int PageId { get; set; }
+		public bool HasSubCategories { get; set; }
 	}
 
     public class ShowTopicViewModel : MasterModel

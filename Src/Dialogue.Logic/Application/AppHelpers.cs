@@ -537,7 +537,7 @@ namespace Dialogue.Logic.Application
                 if (string.IsNullOrEmpty(fileExtension))
                 {
                     upResult.UploadSuccessful = false;
-                    upResult.ErrorMessage = Lang("Errors.GenericMessage");
+                    upResult.ErrorMessage = "Incorrect file extention";
                     return upResult;
                 }
 
@@ -615,8 +615,8 @@ namespace Dialogue.Logic.Application
                 if (string.IsNullOrEmpty(fileExtension))
                 {
                     upResult.UploadSuccessful = false;
-                    upResult.ErrorMessage = Lang("Errors.GenericMessage");
-                    return upResult;
+                    upResult.ErrorMessage = "Incorrect file extention";
+					return upResult;
                 }
 
                 // Remove the dot then check against the extensions in the web.config settings

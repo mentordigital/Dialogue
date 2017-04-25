@@ -137,7 +137,7 @@ namespace Dialogue.Logic.Controllers
 
                 return View(PathHelper.GetThemeViewPath("Authorise"), viewModel);
             }
-            return ErrorToHomePage(Lang("Errors.GenericMessage"));
+            return ErrorToHomePage("Authorise Error");
         }
 
         public ActionResult SpamOverview(DialoguePage page)
@@ -153,7 +153,7 @@ namespace Dialogue.Logic.Controllers
 
                 return View(PathHelper.GetThemeViewPath("SpamOverview"), viewModel);   
             }
-            return ErrorToHomePage(Lang("Errors.GenericMessage"));
+            return ErrorToHomePage("Spam Overview Error");
         }
 
 
@@ -201,7 +201,7 @@ namespace Dialogue.Logic.Controllers
      
             }
 
-            return ErrorToHomePage(Lang("Errors.GenericMessage"));
+            return ErrorToHomePage("Email Confirmation Error");
         }
 
         public ActionResult Create(DialoguePage page)
@@ -384,7 +384,7 @@ namespace Dialogue.Logic.Controllers
                 }
             }
 
-            return ErrorToHomePage(Lang("Errors.GenericMessage"));
+            return ErrorToHomePage("Edit member error");
         }
 
 
@@ -411,7 +411,7 @@ namespace Dialogue.Logic.Controllers
                     return View(PathHelper.GetThemeViewPath("ReportMember"), viewModel);
                 }
             }
-            return ErrorToHomePage(Lang("Errors.GenericMessage"));
+            return ErrorToHomePage("Report member error");
         }
 
         [Authorize]
@@ -453,7 +453,7 @@ namespace Dialogue.Logic.Controllers
                 var id = Request["id"];
                 if (string.IsNullOrEmpty(id))
                 {
-                    return ErrorToHomePage(Lang("Errors.GenericMessage"));
+                    return ErrorToHomePage("Id is null");
                 }
 
                 var message = ServiceFactory.PrivateMessageService.Get(new Guid(id));
@@ -523,7 +523,7 @@ namespace Dialogue.Logic.Controllers
             // Check if private messages are enabled
             if (!Settings.AllowPrivateMessages || CurrentMember.DisablePrivateMessages)
             {
-                return ErrorToHomePage(Lang("Errors.GenericMessage"));
+                return ErrorToHomePage("No permissions");
             }
 
             // Check flood control
@@ -652,7 +652,7 @@ namespace Dialogue.Logic.Controllers
                     }
                 }
             }
-            return ErrorToHomePage(Lang("Errors.GenericMessage"));
+            return ErrorToHomePage("Report error");
         }
 
         [Authorize]

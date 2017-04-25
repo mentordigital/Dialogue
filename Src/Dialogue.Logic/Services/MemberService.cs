@@ -371,8 +371,8 @@ namespace Dialogue.Logic.Services
 
             baseMember.Email = member.Email;       
             baseMember.Properties[AppConstants.PropMemberSignature].Value = member.Signature;
-            baseMember.Properties[AppConstants.PropMemberWebsite].Value = member.Website;
-            baseMember.Properties[AppConstants.PropMemberTwitter].Value = member.Twitter;
+            //baseMember.Properties[AppConstants.PropMemberWebsite].Value = member.Website;
+            //baseMember.Properties[AppConstants.PropMemberTwitter].Value = member.Twitter;
             baseMember.Properties[AppConstants.PropMemberAvatar].Value = member.Avatar;
             baseMember.Properties[AppConstants.PropMemberCanEditOtherUsers].Value = member.CanEditOtherMembers;
             baseMember.Properties[AppConstants.PropMemberDisableEmailNotifications].Value = member.DisableEmailNotifications;

@@ -46,7 +46,7 @@ namespace Dialogue.Logic.Controllers
 
             if (string.IsNullOrEmpty(membername))
             {
-                return ErrorToHomePage(Lang("Errors.GenericMessage"));
+                return ErrorToHomePage("Invalid Membername");
             }
 
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -302,7 +302,7 @@ namespace Dialogue.Logic.Controllers
                 {
                     unitOfWork.Rollback();
                     LogError(ex);
-                    ModelState.AddModelError(string.Empty, Lang("Errors.GenericMessage"));
+                    ModelState.AddModelError(string.Empty, "Error updating member");
                 }
 
                 ShowModelErrors();
@@ -346,7 +346,7 @@ namespace Dialogue.Logic.Controllers
                     return Redirect(user.Url);
                 }
             }
-            return ErrorToHomePage(Lang("Errors.GenericMessage"));
+            return ErrorToHomePage("Report Error");
         }
 
         [Authorize]

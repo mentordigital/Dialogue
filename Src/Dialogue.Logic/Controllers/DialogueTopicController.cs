@@ -705,23 +705,32 @@ namespace Dialogue.Logic.Controllers
             {
                 // Add all categories to a permission set
                 var allCategories = ServiceFactory.CategoryService.GetAll();
-                using (UnitOfWorkManager.NewUnitOfWork())
-                {
-                    foreach (var category in allCategories)
-                    {
-                        // Now check to see if they have access to any categories
-                        // if so, check they are allowed to create topics - If no to either set to false
-                        viewModel.UserCanPostTopics = false;
-                        var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
-                        if (permissionSet[AppConstants.PermissionCreateTopics].IsTicked)
-                        {
-                            viewModel.UserCanPostTopics = true;
-                            break;
-                        }
-                    }
+				using (UnitOfWorkManager.NewUnitOfWork())
+				{
+					foreach (var category in allCategories)
+					{
+						// Now check to see if they have access to any categories
+						// if so, check they are allowed to create topics - If no to either set to false
+						viewModel.UserCanPostTopics = false;
+						var permissionSet = ServiceFactory.PermissionService.GetPermissions(category, _membersGroups);
+						if (permissionSet[AppConstants.PermissionCreateTopics].IsTicked)
+						{
+							viewModel.UserCanPostTopics = true;
+							break;
+						}
+					}
 
-                    // Now check current page
-                    if (AppHelpers.CurrentPage().DocumentTypeAlias == AppConstants.DocTypeForumCategory)
+					var currentPage = AppHelpers.CurrentPage();
+					var curentCategory = ServiceFactory.CategoryService.Get(currentPage.Id, true);
+					if (curentCategory != null)
+					{
+						viewModel.HasSubCategories = curentCategory.ParentCategories.Any();
+					}
+
+
+
+					// Now check current page
+					if (AppHelpers.CurrentPage().DocumentTypeAlias == AppConstants.DocTypeForumCategory)
                     {
                         // In a category - So pass id to create button
                         viewModel.CategoryId = CurrentPage.Id;
