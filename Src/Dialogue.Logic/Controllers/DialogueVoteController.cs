@@ -64,8 +64,9 @@ namespace Dialogue.Logic.Controllers
                     }
                     else
                     {
-                        return Content(post.VoteCount.ToString());
-                    }
+                        //return Content(post.VoteCount.ToString());
+						return Content(string.Empty);
+					}
 
                 }
             }

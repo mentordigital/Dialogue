@@ -373,7 +373,7 @@ namespace Dialogue.Logic.Services
         /// <param name="user"></param>
         /// <param name="permissions"> </param>
         /// <returns>True if post added</returns>
-        public Post AddNewPost(string postContent, Topic topic, Member user, out PermissionSet permissions)
+        public Post AddNewPost(string postContent, Topic topic, Member user, bool forcePending, out PermissionSet permissions)
         {
             // Get the permissions for the category that this topic is in
             permissions = ServiceFactory.PermissionService.GetPermissions(topic.Category, user.Groups);
@@ -404,6 +404,11 @@ namespace Dialogue.Logic.Services
             {
                 newPost.Pending = true;
             }
+
+			if(forcePending)
+			{
+				newPost.Pending = true;
+			}
 
             // create the post
             Add(newPost);

@@ -64,7 +64,20 @@ namespace Dialogue.Logic.Controllers
             Post newPost;
             Topic topic;
             var postContent = string.Empty;
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+
+			//get user post count > 5
+			var currentMemberPostCount = ServiceFactory.PostService.GetByMember(CurrentMember.Id).Count();
+
+			if (CurrentMember.Badges == null)
+			{
+				CurrentMember.Badges = ServiceFactory.BadgeService.GetallMembersBadges(CurrentMember.Id);
+			}
+
+
+			var hasBadge = CurrentMember.Badges != null && CurrentMember.Badges.Any(x => x.Name == "UserFivePost");
+
+
+			using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 // Quick check to see if user is locked out, when logged in
                 if (CurrentMember.IsLockedOut | !CurrentMember.IsApproved)
@@ -85,7 +98,10 @@ namespace Dialogue.Logic.Controllers
 
                 var akismetHelper = new AkismetHelper();
 
-                newPost = ServiceFactory.PostService.AddNewPost(postContent, topic, CurrentMember, out permissions);
+
+				
+
+				newPost = ServiceFactory.PostService.AddNewPost(postContent, topic, CurrentMember, !hasBadge, out permissions);
 
                 if (!akismetHelper.IsSpam(newPost))
                 {
@@ -109,23 +125,22 @@ namespace Dialogue.Logic.Controllers
             }
 
 
-			//get user post count > 5
-			var currentMemberPostCount = ServiceFactory.PostService.GetByMember(CurrentMember.Id).Count();
-
-			if (CurrentMember.Badges == null)
-			{
-				CurrentMember.Badges = ServiceFactory.BadgeService.GetallMembersBadges(CurrentMember.Id);
-			}
-
-
-			var hasBadge = CurrentMember.Badges != null && CurrentMember.Badges.Any(x => x.Name == "UserFivePost");
-
+		
 			//Check for moderation
 			if (newPost.Pending || (currentMemberPostCount < 5 && !hasBadge))
             {
 				// return PartialView(PathHelper.GetThemePartialViewPath("PostModeration"));
 				NotifyCategoryAdmin(topic);
-				return MessageToHomePage("Awaiting Moderation");
+				
+				//return MessageToHomePage("Awaiting Moderation");
+
+				ShowMessage(new GenericMessageViewModel
+				{
+					Message = Lang("Awaiting Moderation"),
+					MessageType = GenericMessages.Warning
+				});
+
+				return Redirect(topic.Category.Url);
 			}
 
             // All good send the notifications and send the post back

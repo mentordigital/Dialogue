@@ -610,12 +610,23 @@ namespace Dialogue.Logic.Controllers
                         // Redirect to the newly created topic
                         return Redirect(string.Format("{0}?postbadges=true", topic.Url));
                     }
-                    if (moderate)
+
+					if (moderate)
                     {
-                        // Moderation needed
-                        // Tell the user the topic is awaiting moderation
-                        return MessageToHomePage("Awaiting Moderation");
-                    }
+						// Moderation needed
+						// Tell the user the topic is awaiting moderation
+						
+
+						ShowMessage(new GenericMessageViewModel
+						{
+							Message = Lang("Awaiting Moderation"),
+							MessageType = GenericMessages.Warning
+						});
+
+						return Redirect(category.Url);
+						
+						//return MessageToHomePage("Awaiting Moderation");
+					}
                 }
             }
             ShowModelErrors();
